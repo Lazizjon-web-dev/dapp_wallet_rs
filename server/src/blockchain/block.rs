@@ -72,4 +72,32 @@ impl Block {
             .collect();
         Ok(())
     }
+
+    pub fn get_hash(&self) -> String {
+        self.hash.clone()
+    }
+
+    pub fn get_hash_ref(&self) -> &String {
+        &self.hash
+    }
+
+    pub fn get_previous_hash(&self) -> String {
+        self.previous_hash.clone()
+    }
+
+    pub fn get_previous_hash_ref(&self) -> &String {
+        &self.previous_hash
+    }
+
+    pub fn get_timestamp(&self) -> u128 {
+        self.timestamp
+    }
+
+    pub fn get_transactions(&self) -> Vec<Transaction> {
+        self.transactions.clone()
+    }
+
+    pub fn get_transactions_ref(&self) -> &Vec<Transaction> {
+        &self.transactions
+    }
 }
