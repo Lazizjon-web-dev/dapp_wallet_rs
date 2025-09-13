@@ -50,4 +50,14 @@ impl Block {
 
         Ok(tree.root())
     }
+
+    pub fn prepare_hash_data(&self) -> Result<Vec<u8>> {
+        let content = (
+            self.previous_hash.clone(),
+            self.calculate_merkle_root()?,
+            self.timestamp,
+        );
+        let bytes: Vec<u8> = encode_to_vec(&content, config::standard())?;
+        Ok(bytes)
+    }
 }
