@@ -2,6 +2,11 @@ use crate::{
     blockchain::transaction::{MergeVu8, Transaction},
     utils::error::Result,
 };
+use bincode::{config, encode_to_vec};
+use chrono::Utc;
+use log::info;
+use merkle_cbt::CBMT;
+use sha2::{Digest, Sha256};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -25,5 +30,24 @@ impl Block {
             authority_signature: String::new(),
             validator_signatures: Vec::new(),
         }
-    };
+    }
+
+    pub fn calculate_merkle_root(&self) -> Result<Vec<u8>> {
+        if self.transactions.is_empty() {
+            info!(
+                "No transactions in the block to calculate Merkle root. Returning an empty string."
+            );
+            return String::new();
+        }
+
+        let mut transactions = Vec::new();
+
+        for tx in &mut self.transactions {
+            transactions.push(tx.calculate_hash()?.as_bytes().to_owned());
+        }
+
+        let tree = CBMT::<Vec<u8>, MergeVu8>::build_merkle_tree(&transactions);
+
+        Ok(tree.root())
+    }
 }
