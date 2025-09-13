@@ -60,4 +60,16 @@ impl Block {
         let bytes: Vec<u8> = encode_to_vec(&content, config::standard())?;
         Ok(bytes)
     }
+
+    pub fn calculate_hash(&mut self) -> Result<()> {
+        let mut hasher = Sha256::new();
+        let data = self.prepare_hash_data()?;
+        hasher.update(&data);
+        self.hash = hasher
+            .finalize()
+            .iter()
+            .map(|b| format!("{:02x}", b))
+            .collect();
+        Ok(())
+    }
 }
